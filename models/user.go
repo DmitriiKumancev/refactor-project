@@ -3,7 +3,32 @@ package models
 import (
 	"errors"
 	"net/http"
+
+	"github.com/go-chi/render"
 )
+
+type ErrResponse struct {
+    Err            error  `json:"-"`
+    HTTPStatusCode int    `json:"-"`
+
+    StatusText     string `json:"status"`
+    AppCode        int64  `json:"code,omitempty"`
+    ErrorText      string `json:"error,omitempty"`
+}
+
+func (e *ErrResponse) Render(w http.ResponseWriter, r *http.Request) error {
+    render.Status(r, e.HTTPStatusCode)
+    return nil
+}
+
+func ErrInvalidRequest(err error) render.Renderer {
+    return &ErrResponse{
+        Err:            err,
+        HTTPStatusCode: 400,
+        StatusText:     "Invalid request.",
+        ErrorText:      err.Error(),
+    }
+}
 
 type User struct {
     CreatedAt   string `json:"created_at"`
@@ -37,6 +62,7 @@ func (c *CreateUserRequest) Bind(r *http.Request) error {
 
 type UpdateUserRequest struct {
     DisplayName string `json:"display_name"`
+    Email       string `json:"email"`
 }
 
 func (u *UpdateUserRequest) Bind(r *http.Request) error {
