@@ -1,4 +1,4 @@
-module github.com/DmitriiKumancev/refactor-project.git
+module github.com/DmitriiKumancev/refactor-project
 
 go 1.17
 
