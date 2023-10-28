@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -16,7 +15,11 @@ import (
 )
 
 var (
-	ErrUserNotFound = errors.New("user_not_found")
+	ErrUserNotFound = &models.ErrResponse{
+		HTTPStatusCode: http.StatusNotFound,
+		StatusText:     "Not Found",
+		ErrorText:      "User not found",
+	}
 )
 
 func SearchUsers(w http.ResponseWriter, r *http.Request) {
@@ -94,7 +97,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	user, ok := s.List[id]
 	if !ok {
-		_ = render.Render(w, r, models.ErrInvalidRequest(ErrUserNotFound))
+		_ = render.Render(w, r, ErrUserNotFound)
 		return
 	}
 
@@ -124,7 +127,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	user, ok := s.List[id]
 	if !ok {
-		_ = render.Render(w, r, models.ErrInvalidRequest(ErrUserNotFound))
+		_ = render.Render(w, r, ErrUserNotFound)
 		return
 	}
 
@@ -161,10 +164,9 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	log.Printf("Received ID from URL: %s\n", id)
 
-
 	_, ok := s.List[id]
 	if !ok {
-		_ = render.Render(w, r, models.ErrInvalidRequest(ErrUserNotFound))
+		_ = render.Render(w, r, ErrUserNotFound)
 		return
 	}
 
