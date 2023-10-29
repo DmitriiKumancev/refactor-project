@@ -43,8 +43,7 @@ In the future, could further enhance this application in the following ways:
 ## Usage Instructions
 ### Prerequisites
 - Install Go on your computer (https://golang.org/dl/).
-- Clone the repository: `git clone https://github.com/your-username/your-repository.git`.
-- Navigate to the project's root directory: `cd your-repository`.
+- Clone the repository: `git clone https://github.com/DmitriiKumancev/refactor-project.git`.
 
 ### Building
 To build the application, run:
