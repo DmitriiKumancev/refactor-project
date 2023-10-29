@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/DmitriiKumancev/refactor-project/apperrors"
@@ -56,6 +57,13 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, apperrors.NewInvalidRequestError(err))
 		return
 	}
+
+	if !strings.Contains(request.Email, "@") {
+        response := apperrors.ErrorResponse{Message: "Email should contain the @ symbol"}
+        w.WriteHeader(http.StatusBadRequest)
+        render.JSON(w, r, response)
+        return
+    }
 
 	s.Increment++
 	u := models.User{
@@ -139,6 +147,14 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, apperrors.ErrUserNotFound)
 		return
 	}
+
+	if request.Email != "" && !strings.Contains(request.Email, "@") {
+        response := apperrors.ErrorResponse{Message: "Email should contain the @ symbol"}
+        w.WriteHeader(http.StatusBadRequest)
+        render.JSON(w, r, response)
+        return
+    }
+
 
 	user.DisplayName = request.DisplayName
 

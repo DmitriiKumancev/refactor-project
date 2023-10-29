@@ -18,6 +18,10 @@ func NewHTTPError(status int, message string) HTTPError {
 	}
 }
 
+type ErrorResponse struct {
+    Message string `json:"message"`
+}
+
 type HTTPError struct {
 	Status  int    `json:"-"`
 	Message string `json:"message"`
