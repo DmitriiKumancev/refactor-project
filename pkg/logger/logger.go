@@ -11,7 +11,6 @@ var (
 	logger *zap.Logger
 )
 
-// InitLogger инициализирует логгер.
 func InitLogger() error {
 	config := zap.NewDevelopmentConfig()
 	config.EncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
@@ -30,10 +29,9 @@ func InitLogger() error {
 	return nil
 }
 
-// GetLogger возвращает экземпляр логгера.
 func GetLogger() *zap.Logger {
 	if logger == nil {
-		InitLogger() // Инициализируем логгер, если он еще не инициализирован
+		InitLogger() 
 	}
 	return logger
 }

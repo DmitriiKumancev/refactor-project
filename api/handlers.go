@@ -8,34 +8,27 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/DmitriiKumancev/refactor-project/apperrors"
 	"github.com/DmitriiKumancev/refactor-project/models"
+	"github.com/DmitriiKumancev/refactor-project/pkg/logger"
 	"github.com/DmitriiKumancev/refactor-project/storage"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"github.com/DmitriiKumancev/refactor-project/pkg/logger"
 	"go.uber.org/zap"
-)
-
-var (
-	ErrUserNotFound = &models.ErrResponse{
-		HTTPStatusCode: http.StatusNotFound,
-		StatusText:     "Not Found",
-		ErrorText:      "User not found",
-	}
 )
 
 func SearchUsers(w http.ResponseWriter, r *http.Request) {
 	f, err := os.ReadFile(storage.Store)
 	if err != nil {
 		logger.GetLogger().Error("Error reading user store", zap.Error(err))
-		_ = render.Render(w, r, models.ErrInvalidRequest(err))
+		render.Render(w, r, apperrors.NewInvalidRequestError(err))
 		return
 	}
 
 	s := models.UserStore{}
 	if err := json.Unmarshal(f, &s); err != nil {
 		logger.GetLogger().Error("Error unmarshalling user data", zap.Error(err))
-		_ = render.Render(w, r, models.ErrInvalidRequest(err))
+		render.Render(w, r, apperrors.NewInvalidRequestError(err))
 		return
 	}
 
@@ -46,21 +39,21 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	f, err := os.ReadFile(storage.Store)
 	if err != nil {
 		logger.GetLogger().Error("Error reading user store", zap.Error(err))
-		_ = render.Render(w, r, models.ErrInvalidRequest(err))
+		render.Render(w, r, apperrors.NewInvalidRequestError(err))
 		return
 	}
 
 	s := models.UserStore{}
 	if err := json.Unmarshal(f, &s); err != nil {
 		logger.GetLogger().Error("Error unmarshalling user data", zap.Error(err))
-		_ = render.Render(w, r, models.ErrInvalidRequest(err))
+		render.Render(w, r, apperrors.NewInvalidRequestError(err))
 		return
 	}
 
 	request := models.CreateUserRequest{}
 	if err := render.Bind(r, &request); err != nil {
 		logger.GetLogger().Error("Invalid request data", zap.Error(err))
-		_ = render.Render(w, r, models.ErrInvalidRequest(err))
+		render.Render(w, r, apperrors.NewInvalidRequestError(err))
 		return
 	}
 
@@ -77,7 +70,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	err = storage.SaveStore(s)
 	if err != nil {
 		logger.GetLogger().Error("Error saving user to store", zap.Error(err))
-		_ = render.Render(w, r, models.ErrInvalidRequest(err))
+		render.Render(w, r, apperrors.NewInvalidRequestError(err))
 		return
 	}
 
@@ -92,14 +85,14 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	f, err := os.ReadFile(storage.Store)
 	if err != nil {
 		logger.GetLogger().Error("Error reading user store", zap.Error(err))
-		_ = render.Render(w, r, models.ErrInvalidRequest(err))
+		render.Render(w, r, apperrors.NewInvalidRequestError(err))
 		return
 	}
 
 	s := models.UserStore{}
 	if err := json.Unmarshal(f, &s); err != nil {
 		logger.GetLogger().Error("Error unmarshalling user data", zap.Error(err))
-		_ = render.Render(w, r, models.ErrInvalidRequest(err))
+		render.Render(w, r, apperrors.NewInvalidRequestError(err))
 		return
 	}
 
@@ -109,7 +102,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	user, ok := s.List[id]
 	if !ok {
 		logger.GetLogger().Error("User not found", zap.String("user_id", id))
-		_ = render.Render(w, r, ErrUserNotFound)
+		render.Render(w, r, apperrors.ErrUserNotFound)
 		return
 	}
 
@@ -120,21 +113,21 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	f, err := os.ReadFile(storage.Store)
 	if err != nil {
 		logger.GetLogger().Error("Error reading user store", zap.Error(err))
-		_ = render.Render(w, r, models.ErrInvalidRequest(err))
+		render.Render(w, r, apperrors.NewInvalidRequestError(err))
 		return
 	}
 
 	s := models.UserStore{}
 	if err := json.Unmarshal(f, &s); err != nil {
 		logger.GetLogger().Error("Error unmarshalling user data", zap.Error(err))
-		_ = render.Render(w, r, models.ErrInvalidRequest(err))
+		render.Render(w, r, apperrors.NewInvalidRequestError(err))
 		return
 	}
 
 	request := models.UpdateUserRequest{}
 	if err := render.Bind(r, &request); err != nil {
 		logger.GetLogger().Error("Invalid request data", zap.Error(err))
-		_ = render.Render(w, r, models.ErrInvalidRequest(err))
+		render.Render(w, r, apperrors.NewInvalidRequestError(err))
 		return
 	}
 
@@ -143,7 +136,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	user, ok := s.List[id]
 	if !ok {
 		logger.GetLogger().Error("User not found", zap.String("user_id", id))
-		_ = render.Render(w, r, ErrUserNotFound)
+		render.Render(w, r, apperrors.ErrUserNotFound)
 		return
 	}
 
@@ -158,7 +151,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	err = storage.SaveStore(s)
 	if err != nil {
 		logger.GetLogger().Error("Error saving user to store", zap.Error(err))
-		_ = render.Render(w, r, models.ErrInvalidRequest(err))
+		render.Render(w, r, apperrors.NewInvalidRequestError(err))
 		return
 	}
 
@@ -170,14 +163,14 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	f, err := os.ReadFile(storage.Store)
 	if err != nil {
 		logger.GetLogger().Error("Error reading user store", zap.Error(err))
-		_ = render.Render(w, r, models.ErrInvalidRequest(err))
+		render.Render(w, r, apperrors.NewInvalidRequestError(err))
 		return
 	}
 
 	s := models.UserStore{}
 	if err := json.Unmarshal(f, &s); err != nil {
 		logger.GetLogger().Error("Error unmarshalling user data", zap.Error(err))
-		_ = render.Render(w, r, models.ErrInvalidRequest(err))
+		render.Render(w, r, apperrors.NewInvalidRequestError(err))
 		return
 	}
 
@@ -187,7 +180,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	_, ok := s.List[id]
 	if !ok {
 		logger.GetLogger().Error("User not found", zap.String("user_id", id))
-		_ = render.Render(w, r, ErrUserNotFound)
+		render.Render(w, r, apperrors.ErrUserNotFound)
 		return
 	}
 
@@ -196,7 +189,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	err = storage.SaveStore(s)
 	if err != nil {
 		logger.GetLogger().Error("Error saving user store", zap.Error(err))
-		_ = render.Render(w, r, models.ErrInvalidRequest(err))
+		render.Render(w, r, apperrors.NewInvalidRequestError(err))
 		return
 	}
 
