@@ -1,23 +1,71 @@
-Здравствуйте, %USERNAME%!
+# Project "Trueconf-task"
 
-Вам предстоит выполнить рефакторинг небольшого приложения на Go (200 строк).
+## Table of Contents
+- [Description](#description)
+- [Constraints](#constraints)
+- [Changes](#changes)
+- [Future Improvements](#future-improvements)
+- [Usage Instructions](#usage-instructions)
+- [Authors](#authors)
 
-Приложение представляет собой API по работе с сущностью User, где хранилищем выступает файл json.
+## Description
+This project is a simple web application for managing a list of users. It provides the following functionality:
+- Search for users
+- Create a new user
+- Get user information by identifier
+- Update user information
+- Delete a user
 
-Ограничения:
-- Хранилищем должен оставаться файл в json формате.
-- Структура пользователя не должна быть уменьшена.
-- Приложение не должно потерять существующую функциональность. 
+## Constraints
+The project maintains all the constraints that were set for the original version:
 
-Мы понимаем, что пределу совершенства нет и ожидаем, что объем рефакторинга вы определяете на свое усмотрение.  
+- User data is still stored in a JSON file.
+- The user structure remains unchanged.
+- The application does not lose its existing functionality.
 
-После того как вы выполните задание, вы так же можете написать, как бы улучшили проект в перспективе текстом.
+## Changes
+To improve the project and ensure better maintainability, I have made the following changes:
+- Restructured the project by separating business logic, error handling, and routing.
+- Added error handling using custom user-defined errors.
+- Implemented logging using the Zap library.
+- Created a Makefile for convenient project building and management.
+- Added loggers for monitoring to the code.
 
-Что следует знать:
-- В будущем это приложение ожидает увеличение количества функций и сущностей. 
-- Вопрос авторизации умышленно опущен, о нем не стоит беспокоиться.
-- API еще не выпущено, вы в праве скорректировать интерфейс / форматы ответов.
+## Future Improvements
+In the future, could further enhance this application in the following ways:
+- Add an authentication system and action restrictions for security.
+- Move data storage to a database, such as MongoDB.
+- Write tests to ensure reliability and stability.
+- Implement metric collection for performance monitoring.
+- Improve the project's architecture by separating it into more detail layers.
+- Implement API versioning to ensure backward compatibility, added authorization.
 
-Работа должна быть оформлена на Github, а все изменения выполнены в отдельном(ых) коммитах.
+## Usage Instructions
+### Prerequisites
+- Install Go on your computer (https://golang.org/dl/).
+- Clone the repository: `git clone https://github.com/your-username/your-repository.git`.
+- Navigate to the project's root directory: `cd your-repository`.
 
-Удачи!
+### Building
+To build the application, run:
+```
+make build
+```
+
+### Running
+To run the application, use the following command:
+```
+make run
+```
+### Cleaning
+To clean up the project, execute:
+```
+make clean
+```
+
+### Interacting with the API
+You can use an API client, such as [Postman](https://www.postman.com/), to interact with the API. The `http` folder contains files for performing various HTTP requests.
+
+## Authors
+
+- [Dmitrii Kumancev](https://github.com/DmitriiKumancev)
